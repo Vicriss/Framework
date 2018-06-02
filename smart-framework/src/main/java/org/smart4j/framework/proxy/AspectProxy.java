@@ -10,11 +10,12 @@ import java.lang.reflect.Method;
  */
 public class AspectProxy implements Proxy {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AspectProxy.class);
+    private static final Logger logger = LoggerFactory.getLogger(AspectProxy.class);
 
     @Override
-    public Object doProxy(ProxyChain proxyChain) throws Throwable {
+    public final Object doProxy(ProxyChain proxyChain) throws Throwable {
         Object result = null;
+
         Class<?> cls = proxyChain.getTargetClass();
         Method method = proxyChain.getTargetMethod();
         Object[] params = proxyChain.getMethodParams();
@@ -24,12 +25,13 @@ public class AspectProxy implements Proxy {
             if (intercept(cls, method, params)) {
                 before(cls, method, params);
                 result = proxyChain.doProxyChain();
-                after(cls, method, params);
-            } else
+                after(cls, method, params, result);
+            } else {
                 result = proxyChain.doProxyChain();
+            }
         } catch (Exception e) {
-            LOGGER.error("proxy failure", e);
-            error(cls, method, params);
+            logger.error("proxy failure", e);
+            error(cls, method, params, e);
             throw e;
         } finally {
             end();
@@ -38,17 +40,22 @@ public class AspectProxy implements Proxy {
         return result;
     }
 
-    public void begin(){}
+    public void begin() {
+    }
 
     public boolean intercept(Class<?> cls, Method method, Object[] params) throws Throwable {
         return true;
     }
 
-    public void before(Class<?> cls, Method method, Object[] params) throws Throwable{}
+    public void before(Class<?> cls, Method method, Object[] params) throws Throwable {
+    }
 
-    public void after(Class<?> cls, Method method, Object[] params) throws Throwable{}
+    public void after(Class<?> cls, Method method, Object[] params, Object result) throws Throwable {
+    }
 
-    public void error(Class<?> cls, Method method, Object[] params) throws Throwable{}
+    public void error(Class<?> cls, Method method, Object[] params, Throwable e) {
+    }
 
-    public void end(){}
+    public void end() {
+    }
 }

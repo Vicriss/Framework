@@ -31,9 +31,7 @@ public class DatabaseHelper {
 
     static {
         CONNECTION_HOLDER = new ThreadLocal<Connection>();
-
         QUERY_RUNNER = new QueryRunner();
-
         DATA_SOURCE = new BasicDataSource();
         DATA_SOURCE.setDriverClassName(ConfigHelper.getJdbcDriver());
         DATA_SOURCE.setUrl(ConfigHelper.getJdbcUrl());
